@@ -1,5 +1,3 @@
-/* Оформлення. Темна тема за замовчуванням */
-
 *, *::before, *::after { box-sizing: border-box; }
 
 :root {
@@ -40,8 +38,6 @@ body {
   font: 15px/1.45 "Segoe UI", Roboto, system-ui, sans-serif;
 }
 
-/* Шапка */
-
 .topbar {
   display: flex; align-items: center; justify-content: space-between;
   gap: 16px;
@@ -63,8 +59,6 @@ body {
   background: var(--panel-2); border: 1px solid var(--bad); border-left-width: 4px;
   border-radius: 8px; color: var(--text); font-size: 13px;
 }
-
-/* Каркас */
 
 .layout {
   display: grid;
@@ -89,8 +83,6 @@ body {
 .history {
   max-width: 1280px; margin: 16px auto 0;
 }
-
-/* Поля */
 
 .field { margin-bottom: 12px; }
 .field label, .check { display: block; margin-bottom: 4px; font-size: 12px; color: var(--muted); }
@@ -120,8 +112,6 @@ input.invalid { border-color: var(--bad); }
 .readout-label { display: block; margin-bottom: 4px; font-size: 12px; color: var(--muted); }
 .readout-value { display: inline-block; padding: 7px 0; font-size: 18px; font-weight: 700; color: var(--accent); }
 
-/* Характеристики */
-
 .abilities {
   display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 14px;
   margin: 4px 0 14px;
@@ -133,8 +123,6 @@ input.invalid { border-color: var(--bad); }
   width: 40px; text-align: center;
   font-weight: 700; color: var(--accent);
 }
-
-/* Блоки, що розгортаються */
 
 .group {
   margin-bottom: 10px;
@@ -165,8 +153,6 @@ input.invalid { border-color: var(--bad); }
 .check-row .cr-ability { color: var(--muted); font-size: 12px; }
 .check-row .cr-bonus { min-width: 34px; text-align: right; font-weight: 700; color: var(--accent); }
 
-/* Зброя */
-
 .weapon {
   padding: 10px; margin-bottom: 8px;
   background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
@@ -180,8 +166,6 @@ input.invalid { border-color: var(--bad); }
   color: var(--muted); font: inherit; font-size: 12px; padding: 4px;
 }
 .link-btn:hover { color: var(--bad); }
-
-/* Кнопки */
 
 .ghost-btn {
   padding: 7px 12px;
@@ -210,8 +194,6 @@ input.invalid { border-color: var(--bad); }
 }
 .roll-btn:hover:not(:disabled) { filter: brightness(1.12); }
 .roll-btn:disabled { opacity: .4; cursor: not-allowed; }
-
-/* Вибір типу кидка і режиму */
 
 .types { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
 .types button {
@@ -247,8 +229,6 @@ input.invalid { border-color: var(--bad); }
 
 .note { margin: 0 0 12px; font-size: 13px; color: var(--bad); }
 
-/* Результат */
-
 .result {
   margin-top: 14px; padding: 16px;
   background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px;
@@ -262,8 +242,6 @@ input.invalid { border-color: var(--bad); }
 .result.is-bad  .result-verdict { color: var(--bad); }
 .result.is-crit .result-verdict, .result.is-crit .result-total { color: var(--crit); }
 .result.is-crit { border-color: var(--crit); }
-
-/* Історія */
 
 .history-list { margin: 0; padding: 0; list-style: none; }
 .history-list li {

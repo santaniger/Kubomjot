@@ -1,6 +1,3 @@
-/* Довідники предметної області.
-   Джерело: "Правила для начинающих" (dungeonsanddragons.ru). */
-
 var ABILITIES = [
   { key: 'str', name: 'Сила',         short: 'Сил' },
   { key: 'dex', name: 'Ловкость',     short: 'Лов' },
@@ -10,7 +7,6 @@ var ABILITIES = [
   { key: 'cha', name: 'Харизма',      short: 'Хар' }
 ];
 
-/* 18 навичок. Порядок і прив'язка до характеристик збережені з джерела */
 var SKILLS = [
   { name: 'Атлетика',           ability: 'str' },
   { name: 'Акробатика',         ability: 'dex' },
@@ -32,12 +28,8 @@ var SKILLS = [
   { name: 'Убеждение',          ability: 'cha' }
 ];
 
-/* Характеристики, які можуть відповідати за магію */
 var SPELL_ABILITIES = ['int', 'wis', 'cha'];
 
-/* Типи кидків.
-   d20    - кидок двадцятигранника, тож доступні перевага і завада;
-   target - яке цільове число запитується: 'dc', 'ac' або null. */
 var ROLL_TYPES = [
   { id: 'skill',   name: 'Навык',                d20: true,  target: 'dc' },
   { id: 'save',    name: 'Спасбросок',           d20: true,  target: 'dc' },

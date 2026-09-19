@@ -1,21 +1,17 @@
-/* Кубомёт: калькулятор кидків D&D 5e */
 
 (function () {
 'use strict';
 
-/* Правила. Чисті обчислення, DOM не чіпають */
 
 var ALLOWED_FACES = [2, 3, 4, 6, 8, 10, 12, 20, 100];
 var MAX_TERMS = 10;
 var HISTORY_LIMIT = 20;
-var MINUS = '−';                 /* типографічний мінус для виводу */
+var MINUS = '−';
 
 function FormulaError(message) { this.message = message; }
 
-/* модифікатор характеристики */
 function abilityModifier(score) { return Math.trunc((score - 10) / 2); }
 
-/* бонус майстерності */
 function proficiencyBonus(level) { return 2 + Math.floor((level - 1) / 4); }
 
 function signed(n) { return n < 0 ? MINUS + Math.abs(n) : '+' + n; }
@@ -23,8 +19,6 @@ function num(n) { return n < 0 ? MINUS + Math.abs(n) : String(n); }
 
 function rollDie(faces) { return Math.floor(Math.random() * faces) + 1; }
 
-/* Кидок d20 з урахуванням переваги та завади.
-   Крит і автопромах визначаються за вибраним кубиком. */
 function rollD20(mode) {
   var dice = [rollDie(20)];
   if (mode === 'adv' || mode === 'dis') dice.push(rollDie(20));
@@ -45,7 +39,6 @@ function d20Text(r) {
   return 'd20: ' + parts.join(', ');
 }
 
-/* розбір формули виду 3d4+d8-1 */
 function parseFormula(input) {
   var s = String(input === null || input === undefined ? '' : input).replace(/\s+/g, '').toLowerCase();
   if (!s) throw new FormulaError('Укажите формулу. Пример: 3d4+d8-1');
@@ -90,7 +83,6 @@ function parseTerm(body, sign) {
   return { sign: sign, count: count, faces: faces };
 }
 
-/* при криті подвоюється кількість кубиків, модифікатор не чіпаємо */
 function rollFormula(terms, doubleDice) {
   var total = 0;
   var parts = [];
@@ -113,7 +105,6 @@ function rollFormula(terms, doubleDice) {
   return { total: total, text: parts.join(' ') };
 }
 
-/* Стан і сховище */
 
 var STORAGE_KEY = 'kubomet.character.v1';
 var STATE_VERSION = 1;
@@ -153,7 +144,6 @@ function clampInt(value, min, max, fallback) {
   return n;
 }
 
-/* Пошкоджені або часткові дані не повинні ламати застосунок */
 function sanitize(raw) {
   var s = defaultState();
   if (!raw || typeof raw !== 'object') return s;
@@ -216,7 +206,7 @@ function load() {
     if (!data || data.version !== STATE_VERSION) throw new Error('несовпадение версии');
     return sanitize(data);
   } catch (e) {
-    try { window.localStorage.removeItem(STORAGE_KEY); } catch (e2) { /* нічого чистити */ }
+    try { window.localStorage.removeItem(STORAGE_KEY); } catch (e2) {}
     warn('Сохранённые данные повреждены, лист сброшен.');
     return defaultState();
   }
@@ -232,7 +222,6 @@ function save() {
   }
 }
 
-/* Похідні величини */
 
 function prof() { return proficiencyBonus(state.level); }
 function mod(key) { return abilityModifier(state.abilities[key]); }
@@ -264,7 +253,6 @@ function weaponBonus(w)   { return mod(w.ability) + (w.prof ? prof() : 0); }
 function spellAttackBonus() { return state.spellAbility === 'none' ? 0 : prof() + mod(state.spellAbility); }
 function spellDC()          { return state.spellAbility === 'none' ? null : 8 + prof() + mod(state.spellAbility); }
 
-/* Валідація */
 
 var NUM_FIELDS = [
   { id: 'f-level', key: 'level', min: 0, max: 20,  msg: 'Уровень должен быть от 1 до 20' },
@@ -304,7 +292,6 @@ function updateRollButton() {
   document.getElementById('roll').disabled = blocked();
 }
 
-/* Побудова інтерфейсу */
 
 function buildAbilities() {
   var box = document.getElementById('abilities');
@@ -450,7 +437,6 @@ function refreshPressed(box, activeId) {
   }
 }
 
-/* Зброя */
 
 function renderWeapons() {
   var box = document.getElementById('weapons');
@@ -564,7 +550,6 @@ function renderWeaponSelect() {
     ? 'Добавьте оружие на листе персонажа' : null);
 }
 
-/* Перерахунок відображуваних величин */
 
 function updateComputed() {
   ABILITIES.forEach(function (a) {
@@ -618,7 +603,7 @@ function updateVisibility() {
 function setType(id) {
   roll.type = id;
   refreshPressed(document.getElementById('roll-types'), id);
-  hideResult();                      /* старий результат очищається */
+  hideResult();
   setError('formula', null);
   document.querySelector('#w-formula input').classList.remove('invalid');
   renderWeaponSelect();
@@ -627,11 +612,10 @@ function setType(id) {
   updateRollButton();
 }
 
-/* Кидок */
 
 function readTarget() {
   var el = document.getElementById('f-target');
-  if (el.value.trim() === '') return null;      /* поле необов'язкове */
+  if (el.value.trim() === '') return null;
   return parseInt(el.value, 10);
 }
 
@@ -651,7 +635,7 @@ function rollCheck(t) {
   } else if (t.id === 'save') {
     bonus = saveBonus(roll.save); title = 'Спасбросок: ' + abilityByKey(roll.save).name;
   } else if (t.id === 'init') {
-    bonus = mod('dex'); title = 'Инициатива';        /* бонус майстерності не додається */
+    bonus = mod('dex'); title = 'Инициатива';
   } else if (t.id === 'weapon') {
     var w = currentWeapon();
     if (!w) { setError('weapon', 'Добавьте оружие на листе персонажа'); updateRollButton(); return null; }
@@ -667,18 +651,16 @@ function rollCheck(t) {
   var isAttack = (t.id === 'weapon' || t.id === 'spell');
   var verdict = null, kind = '';
 
-  if (isAttack && r.isCrit) {                        /* з КЗ не порівнюємо */
+  if (isAttack && r.isCrit) {
     verdict = 'Критическое попадание'; kind = 'crit';
   } else if (isAttack && r.isFumble) {
     verdict = 'Промах'; kind = 'bad';
-  } else if (target !== null) {                      /* порівняння з цільовим числом */
+  } else if (target !== null) {
     var hit = total > target;
     verdict = isAttack ? (hit ? 'Попадание' : 'Промах') : (hit ? 'Успех' : 'Провал');
     kind = hit ? 'ok' : 'bad';
   }
 
-  /* Цільове число показуємо в розкладці завжди, коли воно заповнене,
-     зокрема при криті та автопромаху. На вердикт у цих двох випадках воно не впливає. */
   var detail = d20Text(r) + ' ' + signed(bonus) + ' = ' + num(total);
   if (target !== null) {
     detail += ' vs ' + (t.target === 'ac' ? 'КЗ ' : 'DC ') + target;
@@ -709,7 +691,7 @@ function rollDamage() {
 
   var res = rollFormula(terms, false);
   var raw = res.total + abilityMod;
-  if (roll.crit) raw = raw * 2;                      /* критичне влучання */
+  if (roll.crit) raw = raw * 2;
   var total = raw;
 
   var detail = res.text + (abilityMod !== 0 ? ' ' + signed(abilityMod) : '');
@@ -753,7 +735,6 @@ function doRoll() {
   save();
 }
 
-/* Виведення результату та історії */
 
 function showResult(e) {
   var box = document.getElementById('result');
@@ -792,7 +773,6 @@ function renderHistory() {
   });
 }
 
-/* Синхронізація полів і події */
 
 function syncInputs() {
   document.getElementById('f-name').value = state.name;
@@ -942,7 +922,6 @@ function wireEvents() {
   });
 }
 
-/* Старт */
 
 state = load();
 buildAbilities();
