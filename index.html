@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Кубомёт: калькулятор бросков D&D 5e</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">d20</span>
+    <span class="brand-text">
+      <b>Кубомёт</b>
+      <small>калькулятор бросков и проверок D&amp;D 5e</small>
+    </span>
+  </div>
+  <button type="button" id="theme-toggle" class="ghost-btn">Светлая тема</button>
+</header>
+
+<p id="storage-warning" class="banner" hidden></p>
+
+<main class="layout">
+
+  <!-- Аркуш персонажа -->
+  <section class="panel">
+    <h2>Лист персонажа</h2>
+
+    <div class="field">
+      <label for="f-name">Имя персонажа</label>
+      <input id="f-name" type="text" maxlength="40" autocomplete="off" placeholder="Безымянный герой">
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="f-level">Уровень</label>
+        <input id="f-level" class="num" type="text" inputmode="numeric" maxlength="3" autocomplete="off">
+        <p class="err" data-err="level"></p>
+      </div>
+      <div class="readout">
+        <span class="readout-label">Бонус мастерства</span>
+        <span class="readout-value" id="out-prof">+2</span>
+      </div>
+    </div>
+
+    <div class="abilities" id="abilities"></div>
+
+    <div class="row row-3">
+      <div class="field">
+        <label for="f-ac">Класс защиты</label>
+        <input id="f-ac" class="num" type="text" inputmode="numeric" maxlength="3" autocomplete="off">
+        <p class="err" data-err="ac"></p>
+      </div>
+      <div class="field">
+        <label for="f-hp">Максимум хитов</label>
+        <input id="f-hp" class="num" type="text" inputmode="numeric" maxlength="4" autocomplete="off">
+        <p class="err" data-err="hp"></p>
+      </div>
+      <div class="field">
+        <label for="f-speed">Скорость, футы</label>
+        <input id="f-speed" class="num" type="text" inputmode="numeric" maxlength="4" autocomplete="off">
+        <p class="err" data-err="speed"></p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="f-spell">Заклинательный параметр</label>
+        <select id="f-spell"></select>
+      </div>
+      <div class="readout">
+        <span class="readout-label">DC спасброска</span>
+        <span class="readout-value" id="out-spell-dc">13</span>
+      </div>
+    </div>
+
+    <details class="group">
+      <summary>Навыки <span class="count">18</span></summary>
+      <div class="checklist" id="skills"></div>
+    </details>
+
+    <details class="group">
+      <summary>Спасброски <span class="count">6</span></summary>
+      <div class="checklist" id="saves"></div>
+    </details>
+
+    <details class="group">
+      <summary>Оружие <span class="count" id="weapon-count">0</span></summary>
+      <div id="weapons"></div>
+      <button type="button" class="ghost-btn wide" id="add-weapon">+ Добавить оружие</button>
+    </details>
+
+    <button type="button" class="danger-btn wide" id="reset-character">Сбросить персонажа</button>
+  </section>
+
+  <!-- Кидок -->
+  <section class="panel">
+    <h2>Бросок</h2>
+
+    <div class="types" id="roll-types"></div>
+
+    <div class="field" id="w-skill">
+      <label for="f-skill">Навык</label>
+      <select id="f-skill"></select>
+    </div>
+
+    <div class="field" id="w-save">
+      <label for="f-save">Параметр спасброска</label>
+      <select id="f-save"></select>
+    </div>
+
+    <div class="field" id="w-weapon">
+      <label for="f-weapon">Оружие</label>
+      <select id="f-weapon"></select>
+    </div>
+
+    <div class="field" id="w-formula">
+      <label for="f-formula">Формула кубиков</label>
+      <input id="f-formula" type="text" autocomplete="off" placeholder="3d4+d8-1">
+      <p class="err" data-err="formula"></p>
+    </div>
+
+    <label class="check" id="w-crit"><input type="checkbox" id="f-crit"> критическое попадание</label>
+
+    <p class="note" id="w-spell-note">Задайте заклинательный параметр на листе персонажа.</p>
+
+    <div class="bonus" id="w-bonus">Бонус: <b id="bonus-value">+0</b></div>
+
+    <div class="modes" id="w-modes"></div>
+
+    <div class="field" id="w-target">
+      <label for="f-target" id="target-label">DC (необязательно)</label>
+      <input id="f-target" class="num" type="text" inputmode="numeric" maxlength="3" autocomplete="off">
+      <p class="err" data-err="target"></p>
+    </div>
+
+    <button type="button" class="roll-btn" id="roll">Бросить</button>
+
+    <div class="result" id="result" hidden>
+      <div class="result-total" id="result-total"></div>
+      <div class="result-verdict" id="result-verdict"></div>
+      <div class="result-detail" id="result-detail"></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Історія -->
+<section class="panel history">
+  <h2>История бросков
+    <button type="button" class="ghost-btn" id="clear-history">Очистить</button>
+  </h2>
+  <p class="empty" id="history-empty">Пока пусто, сделайте первый бросок.</p>
+  <ol class="history-list" id="history"></ol>
+</section>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
